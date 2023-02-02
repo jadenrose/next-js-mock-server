@@ -16,26 +16,29 @@ export default async function handler(
   req: HygraphWebhookReq,
   res: NextApiResponse<Data>
 ) {
-  if (!req.headers['gcms-signature'])
-    return res
-      .status(401)
-      .send({ revalidated: false, message: 'Unauthenticated' })
-
   try {
-    if (!process.env.REVALIDATE_SECRET)
-      throw new Error('Revalidate secret missing from env')
+    const secret = process.env.REVALIDATE_SECRET
+
+    if (!secret) throw new Error('Revalidate secret missing from env')
+
+    const body = req.body
+    const signature = req.headers['gcms-signature']
+
+    if (!signature)
+      return res
+        .status(401)
+        .send({ revalidated: false, message: 'Unauthenticated' })
 
     const isValid = verifyWebhookSignature({
-      body: req.body,
-      signature: req.headers['gcms-signature'],
-      secret: process.env.REVALIDATE_SECRET,
+      body,
+      signature,
+      secret,
     })
 
     if (!isValid)
       return res.status(403).send({ revalidated: false, message: 'Forbidden' })
 
-    const path = req.body.data.path
-    const slug = req.body.data.slug
+    const { path, slug } = body.data
 
     const url = `/${[path, slug].join('/')}`
 
@@ -46,6 +49,7 @@ export default async function handler(
     })
   } catch (err) {
     console.error(err)
+
     return res
       .status(500)
       .send({ revalidated: false, message: 'Error revalidating' })
