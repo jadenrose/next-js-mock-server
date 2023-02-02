@@ -1,8 +1,17 @@
 import { gql } from '../__generated__'
 
-export const GET_HOMEPAGE_QUERY = gql(`
-    query GetHomePage {
-        pages (where: {path: null, slug: null}) {
+export const PATHS_QUERY = gql(`
+  query Paths {
+    pages  {
+      path
+      slug
+    }
+  }
+`)
+
+export const PAGE_QUERY = gql(`
+    query Page ($path: String, $slug: String) {
+        pages (where: {path: $path, slug: $slug}) {
             id
             path
             slug

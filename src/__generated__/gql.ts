@@ -13,7 +13,8 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel-plugin for production.
  */
 const documents = {
-    "\n    query GetHomePage {\n        pages (where: {path: null, slug: null}) {\n            id\n            path\n            slug\n            articles {\n              html\n            }\n        }\n    }\n": types.GetHomePageDocument,
+    "\n  query Paths {\n    pages  {\n      path\n      slug\n    }\n  }\n": types.PathsDocument,
+    "\n    query Page ($path: String, $slug: String) {\n        pages (where: {path: $path, slug: $slug}) {\n            id\n            path\n            slug\n            articles {\n              html\n            }\n        }\n    }\n": types.PageDocument,
 };
 
 /**
@@ -33,7 +34,11 @@ export function gql(source: string): unknown;
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n    query GetHomePage {\n        pages (where: {path: null, slug: null}) {\n            id\n            path\n            slug\n            articles {\n              html\n            }\n        }\n    }\n"): (typeof documents)["\n    query GetHomePage {\n        pages (where: {path: null, slug: null}) {\n            id\n            path\n            slug\n            articles {\n              html\n            }\n        }\n    }\n"];
+export function gql(source: "\n  query Paths {\n    pages  {\n      path\n      slug\n    }\n  }\n"): (typeof documents)["\n  query Paths {\n    pages  {\n      path\n      slug\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n    query Page ($path: String, $slug: String) {\n        pages (where: {path: $path, slug: $slug}) {\n            id\n            path\n            slug\n            articles {\n              html\n            }\n        }\n    }\n"): (typeof documents)["\n    query Page ($path: String, $slug: String) {\n        pages (where: {path: $path, slug: $slug}) {\n            id\n            path\n            slug\n            articles {\n              html\n            }\n        }\n    }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};
