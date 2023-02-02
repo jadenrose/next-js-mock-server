@@ -42,6 +42,8 @@ export default async function handler(
 
     const url = `/${[path, slug].join('/')}`
 
+    console.log(url)
+
     await res.revalidate(url)
 
     return res.status(200).send({
