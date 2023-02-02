@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.scss'
-import { useQuery, ApolloClient, InMemoryCache } from '@apollo/client'
+import { ApolloClient, InMemoryCache } from '@apollo/client'
 import { GET_HOMEPAGE_QUERY } from '../src/queries'
 import { GetHomePageQuery } from '../src/__generated__/graphql'
 import parse from 'html-react-parser'
@@ -23,8 +23,10 @@ const Home = (props?: GetHomePageQuery['pages'][0]) => {
             Welcome to <a href="https://nextjs.org">Next.js!</a>
           </h1>
 
-          {articles.map(({ html }) => (
-            <article className={styles.article}>{parse(html)}</article>
+          {articles.map(({ html }, index) => (
+            <article key={index} className={styles.article}>
+              {parse(html)}
+            </article>
           ))}
         </main>
 

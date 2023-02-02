@@ -7,7 +7,7 @@ export const GET_HOMEPAGE_QUERY = gql(`
             path
             slug
             articles {
-                html
+              html
             }
         }
     }
