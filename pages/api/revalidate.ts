@@ -38,6 +38,8 @@ export default async function handler(
     if (!isValid)
       return res.status(403).send({ revalidated: false, message: 'Forbidden' })
 
+    console.log(body)
+
     const { path, slug } = body.data
 
     const url = `/${[path, slug].join('/')}`
