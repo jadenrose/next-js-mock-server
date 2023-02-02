@@ -21,20 +21,25 @@ export default async function handler(
       .status(401)
       .send({ revalidated: false, message: 'Unauthenticated' })
 
-  if (!process.env.REVALIDATE_SECRET)
-    throw new Error('Revalidate secret missing from env')
-
-  const isValid = verifyWebhookSignature({
-    body: req.body,
-    signature: req.headers['gcms-signature'],
-    secret: process.env.REVALIDATE_SECRET,
-  })
-
-  if (!isValid)
-    return res.status(403).send({ revalidated: false, message: 'Forbidden' })
-
   try {
-    console.log(req.body)
+    if (!process.env.REVALIDATE_SECRET)
+      throw new Error('Revalidate secret missing from env')
+
+    const isValid = verifyWebhookSignature({
+      body: req.body,
+      signature: req.headers['gcms-signature'],
+      secret: process.env.REVALIDATE_SECRET,
+    })
+
+    if (!isValid)
+      return res.status(403).send({ revalidated: false, message: 'Forbidden' })
+
+    const path = req.body.data.path
+    const slug = req.body.data.slug
+
+    const url = `/${[path, slug].join('/')}`
+
+    await res.revalidate(url)
 
     return res.status(200).send({
       revalidated: true,
